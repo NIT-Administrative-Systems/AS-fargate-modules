@@ -13,7 +13,7 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
     ecs_target {
         launch_type         = "FARGATE"
         task_count          = 1
-        task_definition_arn = aws_ecs_task_definition.nodejs_task.arn
+        task_definition_arn = aws_ecs_task_definition.main.arn
 
         network_configuration {
             subnets         = data.aws_subnet_ids.account_pvt.ids

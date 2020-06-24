@@ -3,7 +3,7 @@ output "cluster_name" {
 }
 
 output "task_definition" {
-  value = aws_ecs_task_definition.nodejs_task.arn
+  value = aws_ecs_task_definition.main.arn
 }
 
 output "subnet_ids" {

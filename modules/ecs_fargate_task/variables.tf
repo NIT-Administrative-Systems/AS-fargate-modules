@@ -5,6 +5,7 @@ variable "region" {}
 # Fargate
 variable "fargate_cpu" {}
 variable "fargate_memory" {}
+variable "task_iam_policy" {}
 
 # Fargate Networking
 variable "vpc_id" {}

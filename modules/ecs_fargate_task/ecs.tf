@@ -1,11 +1,9 @@
-# cluster is where the tasks (service instances) run
 resource "aws_ecs_cluster" "main" {
   name = "${var.task_name}-${var.env}"
   tags = local.tags
 }
 
-# Create one container definition for each job-cost type
-data "template_file" "nodejs_container_definition" {
+data "template_file" "fargate_container_definition" {
   template      = <<EOF
   [
     {
@@ -24,8 +22,6 @@ data "template_file" "nodejs_container_definition" {
         }
       },
       "environment": [
-        { "name" : "NODE_OPTIONS", "value": "--max-old-space-size=${var.fargate_memory}"},
-        { "name" : "NODE_ENV", "value": "production" },
         { "name" : "task_name", "value": "${var.task_name}" },
         { "name" : "env", "value": "${var.env}" }
       ]
@@ -34,7 +30,7 @@ data "template_file" "nodejs_container_definition" {
   EOF
 }
 
-resource "aws_ecs_task_definition" "nodejs_task" {
+resource "aws_ecs_task_definition" "main" {
   depends_on = [
       aws_iam_role.ecs_execution_role,
       aws_iam_role.ecs_task_role
@@ -43,7 +39,7 @@ resource "aws_ecs_task_definition" "nodejs_task" {
   family = "${var.task_name}-${var.env}"
 
   # define the containers that are launched as part of a task
-  container_definitions    = data.template_file.nodejs_container_definition.rendered
+  container_definitions    = data.template_file.fargate_container_definition.rendered
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu

@@ -15,14 +15,14 @@ data "aws_iam_policy_document" "cw_execution_assume_role_policy" {
 # so event role doesn't have the permissions to run the latest task definition
 
 data "aws_iam_policy_document" "cw_role_policy" {
-  depends_on = [aws_ecs_task_definition.nodejs_task]
+  depends_on = [aws_ecs_task_definition.main]
 
   statement {
     actions = [
       "ecs:RunTask",
     ]
 
-    resources = [aws_ecs_task_definition.nodejs_task.arn]
+    resources = [aws_ecs_task_definition.main.arn]
 
     condition {
       test     = "ArnLike"
