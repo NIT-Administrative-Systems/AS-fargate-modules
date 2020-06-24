@@ -6,6 +6,12 @@ variable "region" {}
 variable "fargate_cpu" {}
 variable "fargate_memory" {}
 variable "task_iam_policy" {}
+variable "container_env_variables" {
+    type = map(string)
+}
+variable "container_secrets" {
+    type = list(string)
+}
 
 # Fargate Networking
 variable "vpc_id" {}

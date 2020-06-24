@@ -3,6 +3,18 @@ resource "aws_ecs_cluster" "main" {
   tags = local.tags
 }
 
+locals {
+  container_env_list = [
+    for k,v in var.container_env_variables: 
+      {"name":"${k}", "value":"${v}"}
+  ]
+
+  container_ssm_secrets_list = [
+    for k,v in local.container_ssm_map: 
+      {"name":"${k}", "valueFrom":"${v}"}
+  ]
+}
+
 data "template_file" "fargate_container_definition" {
   template      = <<EOF
   [
@@ -21,10 +33,8 @@ data "template_file" "fargate_container_definition" {
           "awslogs-group": "${local.cloudwatch_log_group_name}"
         }
       },
-      "environment": [
-        { "name" : "task_name", "value": "${var.task_name}" },
-        { "name" : "env", "value": "${var.env}" }
-      ]
+      "environment": ${jsonencode(local.container_env_list)},
+      "secrets": ${jsonencode(local.container_ssm_secrets_list)}
     }
   ]
   EOF
