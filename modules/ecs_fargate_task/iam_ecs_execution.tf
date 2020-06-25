@@ -19,7 +19,7 @@ resource "aws_iam_role" "ecs_execution_role" {
 
 data "aws_iam_policy_document" "ecs_execution_container_policy" {
     depends_on = [aws_ssm_parameter.secure_param]
-    
+
     statement {
         actions = [
             "ecr:GetAuthorizationToken",
@@ -55,14 +55,6 @@ data "aws_iam_policy_document" "ecs_execution_container_policy" {
 
     statement {
         actions = [
-            "ssm:GetParameters"
-        ]
-        
-        resources = aws_ssm_parameter.secure_param[*].arn
-    }
-
-    statement {
-        actions = [
             "kms:Decrypt"
         ]
 
@@ -72,8 +64,27 @@ data "aws_iam_policy_document" "ecs_execution_container_policy" {
     }
 }
 
+data "aws_iam_policy_document" "ecs_inject_container_secrets_policy" {
+  count = length(var.container_secrets) > 0 ? 1 : 0 # can only add this policy if there are ssm params 
+  
+  statement {
+      actions = [
+          "ssm:GetParameters"
+      ]
+      
+      resources = aws_ssm_parameter.secure_param[*].arn
+  }
+}
+
 resource "aws_iam_role_policy" "ecs_execution_role_policy" {
     name    = "${var.task_name}-ecs-execution-role-policy-${var.env}"
     role    = aws_iam_role.ecs_execution_role.id
     policy  = data.aws_iam_policy_document.ecs_execution_container_policy.json
+}
+
+resource "aws_iam_role_policy" "ecs_execution_secrets_policy" {
+    count = length(var.container_secrets) > 0 ? 1 : 0 # can only add this role policy if there are ssm params 
+    name    = "${var.task_name}-ecs-execution-secrets-policy-${var.env}"
+    role    = aws_iam_role.ecs_execution_role.id
+    policy  = data.aws_iam_policy_document.ecs_inject_container_secrets_policy[0].json # there will only be 1
 }

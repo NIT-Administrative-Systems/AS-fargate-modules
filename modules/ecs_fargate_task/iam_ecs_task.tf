@@ -1,5 +1,7 @@
 # create a policy from the document passed in
 resource "aws_iam_role_policy" "task_role_policy" {
+    count = var.task_iam_policy != null ? 1 : 0 # only create if a policy document is provided 
+
     name    = "${var.task_name}-task-role-policy-${var.env}"
     role    = aws_iam_role.ecs_task_role.id
     policy  = var.task_iam_policy.json
