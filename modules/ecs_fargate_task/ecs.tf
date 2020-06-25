@@ -16,6 +16,7 @@ locals {
 }
 
 data "template_file" "fargate_container_definition" {
+  depends_on = [aws_ssm_parameter.secure_param]  # without this depends_on, takes 2 deploys to update task definition with new params if changed
   template      = <<EOF
   [
     {

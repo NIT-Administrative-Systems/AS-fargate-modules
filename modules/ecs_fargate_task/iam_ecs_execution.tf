@@ -18,6 +18,8 @@ resource "aws_iam_role" "ecs_execution_role" {
 }
 
 data "aws_iam_policy_document" "ecs_execution_container_policy" {
+    depends_on = [aws_ssm_parameter.secure_param]
+    
     statement {
         actions = [
             "ecr:GetAuthorizationToken",

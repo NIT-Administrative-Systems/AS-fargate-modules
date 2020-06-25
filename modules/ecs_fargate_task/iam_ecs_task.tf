@@ -7,6 +7,8 @@ resource "aws_iam_role_policy" "task_role_policy" {
 
 # create another policy for the kms key and any ssm secrets created
 data "aws_iam_policy_document" "task_secrets_policy" {
+    depends_on = [aws_ssm_parameter.secure_param]
+    
     statement {
         actions = [
             "kms:Decrypt"
