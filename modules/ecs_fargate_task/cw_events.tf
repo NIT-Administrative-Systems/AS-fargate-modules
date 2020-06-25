@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "task_schedule" {
-    name                = "${var.task_name}-${var.env}"
-    schedule_expression = var.is_dst ? var.dst_on_schedule : var.dst_off_schedule
+    name                = "${local.task_short_name}-${var.env}"
+    schedule_expression = var.cw_is_dst ? var.cw_dst_on_schedule : var.cw_dst_off_schedule
     is_enabled          = var.cw_status
     tags                = local.tags
 }
@@ -12,11 +12,11 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
 
     ecs_target {
         launch_type         = "FARGATE"
-        task_count          = 1
+        task_count          = var.task_count
         task_definition_arn = aws_ecs_task_definition.main.arn
 
         network_configuration {
-            subnets         = data.aws_subnet_ids.account_pvt.ids
+            subnets         = var.subnet_ids
             security_groups = [aws_security_group.allow_outbound.id]
         }
     }

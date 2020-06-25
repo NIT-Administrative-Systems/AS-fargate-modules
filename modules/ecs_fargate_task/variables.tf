@@ -2,40 +2,63 @@ variable "env" {}
 variable "task_name" {}
 variable "region" {}
 
-# Fargate
-variable "fargate_cpu" {
+# Fargate Task
+variable "task_cpu" {
+    type = number
     default = 256
 }
-variable "fargate_memory" {
+variable "task_memory" {
+    type = number 
     default = 512
 }
 variable "task_iam_policy" {
     default = null # mark as unset if there is none provided
 }
+variable "task_count" {
+    type = number
+    default = 1
+}
+variable "task_family" {
+    type = string
+    default = null # defaults to unset and will be generated in the task definition from other vars
+}
+# Container Definition
 variable "container_env_variables" {
-    type = map(string)
-    default = {}
+    type = list(object({
+        name  = string
+        value = string
+    }))
+    default = []
 }
 variable "container_secrets" {
     type = list(string)
     default = []
 }
+variable "container_port_mappings" {
+    type = list(object({
+        containerPort = number
+        hostPort      = number
+        protocol      = string
+    }))
+    default = []
+}
 
-# Fargate Networking
+# Task Networking
 variable "vpc_id" {}
-variable "subnet_name_tags" {
+variable "subnet_ids" {
     type = list(string)
 }
 
 # CW Rules
 variable "cw_status" {}
-variable "is_dst" {}
-variable "dst_on_schedule" {}
-variable "dst_off_schedule" {}
+variable "cw_is_dst" {}
+variable "cw_dst_on_schedule" {}
+variable "cw_dst_off_schedule" {}
 
 # ECR
 variable "ecr_repository_url"{}
 variable "ecr_repository_arn" {}
 variable "ecr_image_tag" {
+    type = string
     default = "latest"
 }

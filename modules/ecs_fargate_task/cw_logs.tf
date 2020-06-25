@@ -1,6 +1,6 @@
 locals {
     # define reusably so we can refer to it in container defn and outputs
-    cloudwatch_log_group_name = "/aws/ecs/fargate/${var.task_name}-${var.env}"
+    cloudwatch_log_group_name = "/aws/ecs/fargate/${local.task_short_name}-${var.env}"
     cloudwatch_log_stream_prefix = "/task"
 }
 

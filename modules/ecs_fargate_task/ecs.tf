@@ -1,14 +1,10 @@
 resource "aws_ecs_cluster" "main" {
-  name = "${var.task_name}-${var.env}"
+  name = "${local.task_short_name}-${var.env}"
   tags = local.tags
 }
 
+# format secrets into name/valueFrom pairs for container definition 
 locals {
-  container_env_list = [
-    for k,v in var.container_env_variables: 
-      {"name":"${k}", "value":"${v}"}
-  ]
-
   container_ssm_secrets_list = [
     for k,v in local.container_ssm_map: 
       {"name":"${k}", "valueFrom":"${v}"}
@@ -16,11 +12,11 @@ locals {
 }
 
 data "template_file" "fargate_container_definition" {
-  depends_on = [aws_ssm_parameter.secure_param]  # without this depends_on, takes 2 deploys to update task definition with new params if changed
+  depends_on = [aws_ssm_parameter.secure_param]
   template      = <<EOF
   [
     {
-      "name": "${var.task_name}",
+      "name": "${local.task_short_name}",
       "image": "${var.ecr_repository_url}:${var.ecr_image_tag}",
       "requiresCompatibilities": [
         "FARGATE"
@@ -34,8 +30,9 @@ data "template_file" "fargate_container_definition" {
           "awslogs-group": "${local.cloudwatch_log_group_name}"
         }
       },
-      "environment": ${jsonencode(local.container_env_list)},
-      "secrets": ${jsonencode(local.container_ssm_secrets_list)}
+      "environment": ${jsonencode(var.container_env_variables)},
+      "secrets": ${jsonencode(local.container_ssm_secrets_list)},
+      "portMappings": ${jsonencode(var.container_port_mappings)}
     }
   ]
   EOF
@@ -47,14 +44,14 @@ resource "aws_ecs_task_definition" "main" {
       aws_iam_role.ecs_task_role
   ]
 
-  family = "${var.task_name}-${var.env}"
+  family = var.task_family != null ? var.task_family : "${local.task_short_name}-${var.env}"
 
   # define the containers that are launched as part of a task
   container_definitions    = data.template_file.fargate_container_definition.rendered
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = var.fargate_cpu
-  memory                   = var.fargate_memory
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 

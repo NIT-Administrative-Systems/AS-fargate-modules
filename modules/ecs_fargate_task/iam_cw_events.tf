@@ -56,14 +56,14 @@ data "aws_iam_policy_document" "cw_role_policy" {
 }
 
 resource "aws_iam_role" "cw_event_execution_role" {
-  name                  = "${var.task_name}-cw-event-role-${var.env}"
+  name                  = "${local.task_short_name}-cw-event-role-${var.env}"
   assume_role_policy    = data.aws_iam_policy_document.cw_execution_assume_role_policy.json
-  description           = "CW Execution Role for ${var.task_name} ECS"
+  description           = "CW Execution Role for ${local.task_short_name} ECS"
   tags                  = local.tags
 }
 
 resource "aws_iam_role_policy" "cw_role_policy" {
-  name   = "${var.task_name}-cw-event-role-policy-${var.env}"
+  name   = "${local.task_short_name}-cw-event-role-policy-${var.env}"
   role   = aws_iam_role.cw_event_execution_role.id
   policy = data.aws_iam_policy_document.cw_role_policy.json
 }

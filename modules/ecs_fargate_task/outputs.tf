@@ -7,15 +7,15 @@ output "task_definition" {
 }
 
 output "subnet_ids" {
-  value = data.aws_subnet_ids.account_pvt.ids
+  value = var.subnet_ids
 }
 
 output "security_group" {
   value = aws_security_group.allow_outbound.id
 }
 
-output "task_name" {
-    value = var.task_name # used in containername override
+output "task_short_name" {
+    value = local.task_short_name
 }
 
 output "cw_log_group_name" {
@@ -24,4 +24,8 @@ output "cw_log_group_name" {
 
 output "cw_log_stream_prefix" {
     value = local.cloudwatch_log_stream_prefix
+}
+
+output "parameters" {
+    value = zipmap(var.container_secrets, slice(aws_ssm_parameter.secure_param.*.name, 0, length(var.container_secrets)))
 }

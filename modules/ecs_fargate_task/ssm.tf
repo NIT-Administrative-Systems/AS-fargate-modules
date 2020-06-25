@@ -1,12 +1,12 @@
 
 resource "aws_kms_key" "key" {
-  description = "Key for encrypting ${var.task_name} secrets - ${var.env}"
+  description = "Key for encrypting ${local.task_short_name} secrets - ${var.env}"
 }
 
 resource "aws_ssm_parameter" "secure_param" {
   count = length(var.container_secrets)
 
-  name        = "/${var.task_name}/${var.env}/${var.container_secrets[count.index]}"
+  name        = "/${local.task_short_name}/${var.env}/${var.container_secrets[count.index]}"
   description = "Fargate Task secret: ${var.container_secrets[count.index]}"
   type        = "SecureString"
   value       = "SSM parameter store not populated from Jenkins"
@@ -21,10 +21,7 @@ resource "aws_ssm_parameter" "secure_param" {
   }
 }
 
+# create secrets map for ecs task definition
 locals {
     container_ssm_map = zipmap(var.container_secrets, slice(aws_ssm_parameter.secure_param.*.arn, 0, length(var.container_secrets)))
-}
-
-output "parameters" {
-    value = zipmap(var.container_secrets, slice(aws_ssm_parameter.secure_param.*.name, 0, length(var.container_secrets)))
 }
