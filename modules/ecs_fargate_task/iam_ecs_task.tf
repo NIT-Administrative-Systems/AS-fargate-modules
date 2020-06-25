@@ -5,35 +5,6 @@ resource "aws_iam_role_policy" "task_role_policy" {
     policy  = var.task_iam_policy.json
 }
 
-# create another policy for the kms key and any ssm secrets created
-data "aws_iam_policy_document" "task_secrets_policy" {
-    depends_on = [aws_ssm_parameter.secure_param]
-    
-    statement {
-        actions = [
-            "kms:Decrypt"
-        ]
-
-        resources = [
-            aws_kms_key.key.arn
-        ]
-    }
-
-    statement {
-        actions = [
-            "ssm:GetParameter",
-            "ssm:GetParameters"
-        ]
-        
-        resources = aws_ssm_parameter.secure_param[*].arn
-    }
-}
-resource "aws_iam_role_policy" "task_secrets_policy" {
-    name    = "${var.task_name}-task-secrets-policy-${var.env}"
-    role    = aws_iam_role.ecs_task_role.id
-    policy  = data.aws_iam_policy_document.task_secrets_policy.json
-}
-
 # allow the task to assume the role
 data "aws_iam_policy_document" "task_assume_role_policy" {
   statement {
