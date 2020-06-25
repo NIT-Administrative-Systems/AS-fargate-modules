@@ -1,7 +1,7 @@
 output "parameters" {
-    value = module.build_dev.parameters
+    value = module.ecs_resources.parameters
 }
 
 output "cluster_name" {
-  value = module.build_dev.cluster_name
+  value = module.ecs_resources.cluster_name
 }

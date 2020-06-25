@@ -1,6 +1,6 @@
 # Build the Shared Module Infrastructure
 # This example sets all required and optional vars for more customization
-module "build_fargate_task" {
+module "fargate_task" {
   source = "github.com/NIT-Administrative-Systems/AS-fargate-modules//modules/ecs_fargate_task?ref=master"
 
   env         = var.environment

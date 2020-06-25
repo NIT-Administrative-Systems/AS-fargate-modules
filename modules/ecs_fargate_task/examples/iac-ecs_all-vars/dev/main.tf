@@ -1,4 +1,4 @@
-module "build_dev" {
+module "ecs_resources" {
     source = "../modules"
 
     environment = "dev"
