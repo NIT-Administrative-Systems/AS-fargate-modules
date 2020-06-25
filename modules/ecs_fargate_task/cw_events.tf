@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "task_schedule" {
     name                = "${local.task_short_name}-${var.env}"
-    schedule_expression = var.cw_is_dst ? var.cw_dst_on_schedule : var.cw_dst_off_schedule
+    schedule_expression = var.cw_is_dst ? var.cw_is_dst_schedule : var.cw_not_dst_schedule
     is_enabled          = var.cw_status
     tags                = local.tags
 }

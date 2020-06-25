@@ -52,8 +52,8 @@ variable "subnet_ids" {
 # CW Rules
 variable "cw_status" {}
 variable "cw_is_dst" {}
-variable "cw_dst_on_schedule" {}
-variable "cw_dst_off_schedule" {}
+variable "cw_is_dst_schedule" {}
+variable "cw_not_dst_schedule" {}
 
 # ECR
 variable "ecr_repository_url"{}
