@@ -21,6 +21,9 @@ data "template_file" "fargate_container_definition" {
       "requiresCompatibilities": [
         "FARGATE"
      ],
+      "compatibilities": [
+        "FARGATE"
+      ],
       "networkMode": "awsvpc",
       "logConfiguration": {
         "logDriver": "awslogs",
