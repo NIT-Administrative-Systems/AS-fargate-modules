@@ -24,11 +24,12 @@ data "terraform_remote_state" "ecr" {
 data "aws_iam_policy_document" "example_ecs_task_policy" {
     statement {
         actions = [
-            "s3:put"
+            "s3:putObject"
         ]
 
         resources = [
-            aws_s3_bucket.example.arn
+            aws_s3_bucket.example.arn,
+            "${aws_s3_bucket.example.arn}/*"
         ]
     }
 }
