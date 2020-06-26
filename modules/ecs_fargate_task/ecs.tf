@@ -11,34 +11,48 @@ locals {
   ]
 }
 
-data "template_file" "fargate_container_definition" {
-  depends_on = [aws_ssm_parameter.secure_param]
-  template      = <<EOF
-  [
-    {
-      "name": "${local.task_short_name}",
-      "image": "${var.ecr_repository_url}:${var.ecr_image_tag}",
-      "requiresCompatibilities": [
-        "FARGATE"
-     ],
-      "compatibilities": [
-        "FARGATE"
-      ],
-      "networkMode": "awsvpc",
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-stream-prefix": "${local.cloudwatch_log_stream_prefix}",
-          "awslogs-region": "${var.region}",
-          "awslogs-group": "${local.cloudwatch_log_group_name}"
-        }
-      },
-      "environment": ${jsonencode(var.container_env_variables)},
-      "secrets": ${jsonencode(local.container_ssm_secrets_list)},
-      "portMappings": ${jsonencode(var.container_port_mappings)}
-    }
-  ]
-  EOF
+# data "template_file" "fargate_container_definition" {
+#   depends_on = [aws_ssm_parameter.secure_param]
+#   template      = <<EOF
+#   [
+#     {
+#       "name": "${local.task_short_name}",
+#       "image": "${var.ecr_repository_url}:${var.ecr_image_tag}",
+#       "requiresCompatibilities": [
+#         "FARGATE"
+#      ],
+#       "compatibilities": [
+#         "FARGATE"
+#       ],
+#       "networkMode": "awsvpc",
+#       "logConfiguration": {
+#         "logDriver": "awslogs",
+#         "options": {
+#           "awslogs-stream-prefix": "${local.cloudwatch_log_stream_prefix}",
+#           "awslogs-region": "${var.region}",
+#           "awslogs-group": "${local.cloudwatch_log_group_name}"
+#         }
+#       },
+#       "environment": ${jsonencode(var.container_env_variables)},
+#       "secrets": ${jsonencode(local.container_ssm_secrets_list)},
+#       "portMappings": ${jsonencode(var.container_port_mappings)}
+#     }
+#   ]
+#   EOF
+# }
+
+locals {
+  container_vars = {
+    task_short_name = local.task_short_name
+    ecr_repository_url = var.ecr_repository_url
+    ecr_image_tag = var.ecr_image_tag
+    cloudwatch_log_stream_prefix = local.cloudwatch_log_stream_prefix  
+    region = var.region
+    cloudwatch_log_group_name = local.cloudwatch_log_group_name
+    container_env_variables = jsonencode(var.container_env_variables)
+    container_ssm_secrets_list = jsonencode(local.container_ssm_secrets_list)
+    container_port_mappings = jsonencode(var.container_port_mappings)
+  }
 }
 
 resource "aws_ecs_task_definition" "main" {
@@ -50,7 +64,8 @@ resource "aws_ecs_task_definition" "main" {
   family = var.task_family != null ? var.task_family : "${local.task_short_name}-${var.env}"
 
   # define the containers that are launched as part of a task
-  container_definitions    = data.template_file.fargate_container_definition.rendered
+  # container_definitions    = data.template_file.fargate_container_definition.rendered
+  container_definitions = templatefile("${path.module}/ContainerDefinitions.json", local.container_vars)
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.task_cpu
