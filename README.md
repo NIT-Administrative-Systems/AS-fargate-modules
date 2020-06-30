@@ -49,24 +49,6 @@ Available outputs from the modules:
 | cw_log_stream_prefix | The name of the cloudwatch log prefix for your task logs. Useful for querying logs via AWS logs cli |
 | task_short_name | The task name (cleaned and shortened) used to name resources | 
 
-
-## ECR Repository
-
-This is a Terraform IaC module for creating an ECR repository implementing the Admin  Systems practices outlined on our cloud practice site. 
-
-Examples using this module can be found in the module's examples sub-directory.
-
-### Inputs
-Available inputs to pass into the modules: 
-| Name | Description | Required | Type | Default |
-| ---- | ----------- | -------- | ---- | ------- |
-
-
-### Outputs
-Available outputs from the modules: 
-| Name | Description |
-| ---- | ----------- |
-
 ## Complete Example
 A complete end-to-end example implementing the ECR repository and Fargate Task for a simple Node.js application can be found in the [NUIT Administrative Systems Fargate Task Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-task-example)
 
