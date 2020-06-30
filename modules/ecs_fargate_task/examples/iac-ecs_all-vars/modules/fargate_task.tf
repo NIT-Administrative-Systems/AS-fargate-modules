@@ -19,6 +19,7 @@ module "fargate_task" {
 
   vpc_id     = data.terraform_remote_state.shared_resources.outputs.vpc_id
   subnet_ids = ["subnet-002338fccd5226b4d", "subnet-096ed7911d904ef89"] # TODO - remote state
+  assign_public_ip = true
 
   cw_status             = true # rule enabled (true) or disabled (false)
   cw_is_dst             = true # DST true for summer (UTC-5) or DST false for winter (UTC-6)

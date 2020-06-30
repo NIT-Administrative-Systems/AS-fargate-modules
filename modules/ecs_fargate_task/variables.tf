@@ -48,10 +48,18 @@ variable "vpc_id" {}
 variable "subnet_ids" {
     type = list(string)
 }
+variable "assign_public_ip" {
+    type = bool
+    default = false
+}
 
 # CW Rules
-variable "cw_status" {}
-variable "cw_is_dst" {}
+variable "cw_status" {
+    type = bool
+}
+variable "cw_is_dst" {
+    type = bool
+}
 variable "cw_is_dst_schedule" {}
 variable "cw_not_dst_schedule" {}
 

@@ -29,3 +29,7 @@ output "cw_log_stream_prefix" {
 output "parameters" {
     value = zipmap(var.container_secrets, slice(aws_ssm_parameter.secure_param.*.name, 0, length(var.container_secrets)))
 }
+
+output "kms_arn" {
+    value = aws_kms_key.key.arn
+}
