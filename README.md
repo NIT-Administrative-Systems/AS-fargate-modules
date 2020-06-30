@@ -50,10 +50,10 @@ Available outputs from the modules:
 | task_short_name | The task name (cleaned and shortened) used to name resources | 
 
 ## Complete Example
-A complete end-to-end example implementing the ECR repository and Fargate Task for a simple Node.js application can be found in the [NUIT Administrative Systems Fargate Task Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-task-example)
+A complete end-to-end example implementing implementing the shared Fargate Task module with an ECR repository, building the image, etc. for a simple Node.js application can be found in the [NUIT Administrative Systems Fargate Task Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-task-example)
 
 ## Contributing
 Find another input you would like parameterized? Need another output? Pull requests welcome! Want to clarify something in the documentation? Pull requests welcome!
 
 ## Known issues 
-
+There is a Terraform or AWS bug causing the task definition template to only update the name property of the secrets and ignore the updated valueFrom in the updated map variable, so valueFrom property doesn't get the new ARN when the container secrets list changes until second deploy. Fixed by adding a depends_on to the task definition template, however the way Terraform handles a depends_on in a template causes it to destroy and recreate  a new task definition revision in the task family every time you run `terraform apply`.
