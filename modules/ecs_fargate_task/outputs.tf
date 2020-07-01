@@ -11,7 +11,7 @@ output "subnet_ids" {
 }
 
 output "security_group" {
-  value = aws_security_group.allow_outbound.id
+  value = var.aws_security_group != null ? var.aws_security_group.id : aws_security_group.allow_outbound[0].id
 }
 
 output "task_short_name" {

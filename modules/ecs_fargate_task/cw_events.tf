@@ -17,7 +17,7 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
 
         network_configuration {
             subnets         = var.subnet_ids
-            security_groups = [aws_security_group.allow_outbound.id]
+            security_groups = [ var.aws_security_group != null ? var.aws_security_group.id : aws_security_group.allow_outbound[0].id ]
             assign_public_ip = var.assign_public_ip
         }
     }

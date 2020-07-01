@@ -11,28 +11,29 @@ module "fargate_task" {
   ecr_repository_arn = data.terraform_remote_state.ecr.outputs.ecr_repository_arn
   ecr_image_tag      = "version2.0"
 
-  task_iam_policy  = data.aws_iam_policy_document.example_ecs_task_policy
-  task_cpu         = 512
-  task_memory      = 1024
-  task_family      = "example_family_4"
-  task_count       = 2
+  aws_task_iam_policy_document  = data.aws_iam_policy_document.example_ecs_task_policy
+  task_cpu                      = 512
+  task_memory                   = 1024
+  task_family                   = "example_family_4"
+  task_count                    = 2
 
-  vpc_id     = data.terraform_remote_state.shared_resources.outputs.vpc_id
-  subnet_ids = ["subnet-002338fccd5226b4d", "subnet-096ed7911d904ef89"] # TODO - remote state
+  vpc_id           = data.terraform_remote_state.shared_resources.outputs.vpc_id
+  subnet_ids       = ["subnet-002338fccd5226b4d", "subnet-096ed7911d904ef89"] # TODO - remote state
+  aws_security_group = aws_security_group.inbound_outbound
   assign_public_ip = true
 
-  cw_status             = true # rule enabled (true) or disabled (false)
-  cw_schedule    = "cron(30 21 ? * MON-FRI *)" # cloudwatch schedule to use when DST is true 
+  cw_status   = true # rule enabled (true) or disabled (false)
+  cw_schedule = "cron(30 21 ? * MON-FRI *)" # cloudwatch schedule to use when DST is true 
 
   # Do not include secret values here (passwords, API tokens, etc)
   # List of maps e.g. [{name = "env", value = "dev"}, {name = "task_name", value = "my_task"}]
   container_env_variables = [
     { 
-      name = "task_name",
+      name  = "task_name",
       value = var.app_name
     },
     {
-      name = "env",
+      name  = "env",
       value = var.environment
     }
   ]

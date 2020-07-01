@@ -33,3 +33,26 @@ data "aws_iam_policy_document" "example_ecs_task_policy" {
         ]
     }
 }
+
+# Traffic to/from the ECS Cluster
+resource "aws_security_group" "inbound_outbound" {
+  name        = "${var.app_name}-Example-${var.environment}"
+  description = "${var.app_name} ECS cluster inbound outbound traffic - ${var.environment}"
+  vpc_id      = data.terraform_remote_state.shared_resources.outputs.vpc_id
+
+  # outbound traffic for NAT Gateway and outside API calls
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" # equivalent of ALL which is not allowed here
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # example
+  ingress {
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+    cidr_blocks = ["your.cidr.block.here/example"]
+  }
+}

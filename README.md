@@ -19,6 +19,7 @@ Available inputs to pass into the modules:
 | ecr_repository_arn | ECR repositiory arn (to grant task necessary IAM permissions) | Yes | string | Required parameters do not have a default. | 
 | ecr_image_tag | ECR image tag to pull for starting the container | No | string | "latest" |
 | vpc_id | The VPC id to run in. Fargate task definitions require that the network mode is set to awsvpc. The awsvpc network mode provides each task with its own elastic network interface. | Yes | string | Required parameters do not have a default. | 
+| aws_security_group | A terraformed aws_security_group resource to use. | No | Terraform aws_security_group resource | If none is provided, a security group will be created which allows outbound traffic. | 
 | subnet_ids | One or more subnets for the fargate ENI to attach to. | Yes | list(string) | Required parameters do not have a default. | 
 | assign_public_ip | Whether to assign a public IP address to the ENI | No | boolean | false |
 | cw_status | Whether to enable or disable the cloudwatch rule | Yes | boolean | Required parameters do not have a default. | 
@@ -28,7 +29,7 @@ Available inputs to pass into the modules:
 | container_port_mappings | The list of port mappings for the container | No | list(object({containerPort = number, hostPort = number, protocol = string})) | [] |
 | task_cpu | The number of CPU units reserved for the task (The container level will use the same value) | No | number | 256 |
 | task_memory | The memory specified for the task level (The container level will use the same value) | No | number | 512 |
-| task_iam_policy | An IAM policy document granting permissions for other AWS services your task container is allowed to make calls to when it's running. | No | Terraform aws_iam_policy_document resource | null |
+| aws_task_iam_policy_document | An IAM policy document granting permissions for other AWS services your task container is allowed to make calls to when it's running. | No | Terraform aws_iam_policy_document resource | null |
 | task_count | Number of tasks to launch on the cluster. Increasing the task count increases the number of instances of your application. | No | number | 1 | 
 | task_family | A name for multiple versions of the task definition | No | string | task_name-env |
 
@@ -41,7 +42,7 @@ Available outputs from the modules:
 | kms_arn | The arn of the encryption key used for the SSM secrets so you can use it to encrypt elsewhere | 
 | task_definition | The arn of the task definition created. Useful in AWS ECS cli commands e.g. to see if your task is running |  
 | cluster_name | The name of the ecs cluster created. Useful in AWS ECS cli commands  e.g. to run a one-off task or see what's running on your cluster | 
-| security_group | The id of the security group created. May be useful in AWS ECS cli commands, e.g. to run a one-off task | 
+| security_group | The id of the security group used. May be useful in AWS ECS cli commands, e.g. to run a one-off task | 
 | subnet_ids | The list of subnet ids - may be useful in AWS ECS cli commands e.g. to run a one-off task |
 | cw_log_group_name | The name of the cloudwatch log group created for your task. Useful for querying logs via AWS logs cli |
 | cw_log_stream_prefix | The name of the cloudwatch log prefix for your task logs. Useful for querying logs via AWS logs cli |

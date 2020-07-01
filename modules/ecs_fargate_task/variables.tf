@@ -11,7 +11,7 @@ variable "task_memory" {
     type = number 
     default = 512
 }
-variable "task_iam_policy" {
+variable "aws_task_iam_policy_document" {
     default = null # mark as unset if there is none provided
 }
 variable "task_count" {
@@ -51,6 +51,9 @@ variable "subnet_ids" {
 variable "assign_public_ip" {
     type = bool
     default = false
+}
+variable "aws_security_group" {
+    default = null # mark as unset if there is none provided
 }
 
 # CW Rules
