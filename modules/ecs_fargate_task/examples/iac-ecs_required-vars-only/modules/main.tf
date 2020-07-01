@@ -14,7 +14,5 @@ module "build_fargate_task" {
   subnet_ids = ["subnet-002338fccd5226b4d", "subnet-096ed7911d904ef89"] # TODO - remote state
 
   cw_status             = true 
-  cw_is_dst             = true 
-  cw_is_dst_schedule    = "cron(30 21 ? * MON-FRI *)"
-  cw_not_dst_schedule   = "cron(30 22 ? * MON-FRI *)"
+  cw_schedule    = "cron(30 21 ? * MON-FRI *)"
 }

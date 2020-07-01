@@ -22,9 +22,7 @@ module "fargate_task" {
   assign_public_ip = true
 
   cw_status             = true # rule enabled (true) or disabled (false)
-  cw_is_dst             = true # DST true for summer (UTC-5) or DST false for winter (UTC-6)
-  cw_is_dst_schedule    = "cron(30 21 ? * MON-FRI *)" # cloudwatch schedule to use when DST is true 
-  cw_not_dst_schedule   = "cron(30 22 ? * MON-FRI *)" # alternate cloudwatch schedule to use when DST is false
+  cw_schedule    = "cron(30 21 ? * MON-FRI *)" # cloudwatch schedule to use when DST is true 
 
   # Do not include secret values here (passwords, API tokens, etc)
   # List of maps e.g. [{name = "env", value = "dev"}, {name = "task_name", value = "my_task"}]
