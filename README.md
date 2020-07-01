@@ -32,6 +32,7 @@ Available inputs to pass into the modules:
 | aws_task_iam_policy_document | An IAM policy document granting permissions for other AWS services your task container is allowed to make calls to when it's running. | No | Terraform aws_iam_policy_document resource | null |
 | task_count | Number of tasks to launch on the cluster. Increasing the task count increases the number of instances of your application. | No | number | 1 | 
 | task_family | A name for multiple versions of the task definition | No | string | task_name-env |
+| tags | A set of tag name and value pairs for tagging all applicable resources created - useful for cost visibility | No | map(string) | By default resources will be tagged with these standard AS tags: Application: task_name, Environment: env. Override these values by including them in your tags input map. | 
 
 
 ### Outputs

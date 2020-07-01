@@ -69,3 +69,8 @@ variable "ecr_image_tag" {
     type = string
     default = "latest"
 }
+
+variable "tags" {
+    type = map(string)
+    default = {}
+}

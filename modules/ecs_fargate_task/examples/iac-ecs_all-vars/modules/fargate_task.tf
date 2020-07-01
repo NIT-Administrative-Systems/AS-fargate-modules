@@ -60,4 +60,9 @@ module "fargate_task" {
       containerPort = 4443
     }
   ]
+  
+  tags = {
+    test_tag = "testtag-1234"
+    Application = "myapp"
+  }
 }
