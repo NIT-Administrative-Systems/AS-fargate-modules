@@ -80,11 +80,6 @@ resource "aws_ecs_service" "main" {
     aws_cloudwatch_log_group.ecs,
   ]
 
-  # ordered_placement_strategy {
-  #   type  = "binpack"
-  #   field = "cpu"
-  # }
-
   # register the service with the load balancer target group created 
   load_balancer {
     target_group_arn = aws_lb_target_group.lb_target_group.arn

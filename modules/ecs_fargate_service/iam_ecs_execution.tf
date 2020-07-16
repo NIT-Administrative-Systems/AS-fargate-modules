@@ -88,22 +88,3 @@ resource "aws_iam_role_policy" "ecs_execution_secrets_policy" {
     role    = aws_iam_role.ecs_execution_role.id
     policy  = data.aws_iam_policy_document.ecs_inject_container_secrets_policy[0].json # there will only be 1
 }
-
-data "aws_iam_policy_document" "task_alb_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "elasticloadbalancing:DeregisterTargets",
-      "elasticloadbalancing:Describe*",
-      "elasticloadbalancing:RegisterTargets",
-    ]
-    resources = ["*"]
-  }
-}
-
-resource "aws_iam_role_policy" "alb_role_policy" {
-    name    = "${local.task_short_name}-alb-role-policy-${var.env}"
-    role    = aws_iam_role.ecs_execution_role.id
-    policy  = data.aws_iam_policy_document.task_alb_policy.json
-}
-

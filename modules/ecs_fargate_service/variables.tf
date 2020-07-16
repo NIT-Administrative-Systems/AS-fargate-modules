@@ -75,7 +75,10 @@ variable "tags" {
 }
 
 # ALB
-variable "deregistration_delay" {}
+variable "deregistration_delay" {
+    type = number
+    default = 300
+}
 variable "alb_listener_arn" {}
 variable "hostnames" {
     type = list(string)

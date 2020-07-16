@@ -9,7 +9,7 @@ resource "aws_appautoscaling_target" "ecs_target" {
 # Target Tracking - set metric and target value 
 # ECS Auto Scaling creates and manages cloudwatch alarms and calculates scaling adjustment
 resource "aws_appautoscaling_policy" "ecs_targettracking_cpu" {
-  name               = "cpu-gt-75:${aws_appautoscaling_target.ecs_target.resource_id}"
+  name               = "cpu-gt-${var.cpu_target}:${aws_appautoscaling_target.ecs_target.resource_id}"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
@@ -20,16 +20,14 @@ resource "aws_appautoscaling_policy" "ecs_targettracking_cpu" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = var.cpu_target # scale out when cpu above 75
-    # optional
+    target_value = var.cpu_target
     scale_in_cooldown = var.cpu_scalein_cooldown # time in seconds after a scale_in that it can scale_in again
     scale_out_cooldown = var.cpu_scaleout_cooldown # time in seconds after a scale_out that it can scale_out again
   }
 }
 
-
 resource "aws_appautoscaling_policy" "ecs_targettracking_mem" {
-  name               = "mem-gt-75:${aws_appautoscaling_target.ecs_target.resource_id}"
+  name               = "mem-gt-${var.memory_target}:${aws_appautoscaling_target.ecs_target.resource_id}"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
