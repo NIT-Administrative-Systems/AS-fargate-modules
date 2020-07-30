@@ -4,6 +4,8 @@
 
 This is a Terraform IaC module for creating a fargate task with a single container, which runs on a schedule via cloudwatch event rule, and secrets management through SSM. It implements the Admin Systems practices outlined on our cloud practice site. This solution may be ideal for a serverless architecture which is resource-intensive or long-running enough to exceed the lambda duration/memory limitations e.g. periodic longer-running batch jobs, etc. 
 
+When `terraform apply` updates the task definition, or the image has been updated, future tasks launched will use the new image/definition version but any tasks already running will not recieve the changes. 
+
 Fargate task charges are based on the vCPU and Memory resources while your containerized application is running. 
 
 Examples using this module can be found in the module's examples sub-directory.
@@ -59,6 +61,8 @@ There is a Terraform or AWS bug causing the task definition template to only upd
 A service lets you specify how many copies of the task definition to run. This module runs a service behind an Application Load Balancer to distribute incoming traffic to containers (each with 1 task) in your service. Amazon ECS maintains that number of tasks and coordinates task scheduling with the load balancer. The module uses ECS Service Auto Scaling with target tracking to adjust the number of tasks in your service based on CPU and memory utilization targets.
 
 If your service is not a customer-facing application, it is able to make use of the shared account ALB - see the AS Cloud Docs website. 
+
+When `terraform apply` updates the task definition or you push a new ecr image, future tasks launched will use the new image and/or definition but any tasks already running will not recieve the changes. `terraform apply` will not necessarily trigger a redeployment of the ECS service if that resource has not changed; you should develop a mechanism for redeploying the service after image/task definitions are changed, e.g. using `aws ecs update-service --cluster <cluster name> --service <service name> --force-new-deployment` in your pipeline. 
 
 Fargate service charges are based on the vCPU and Memory resources while your containerized application is running, and the number of tasks running. This is in addition to charges for other AWS services used, such as the ALB traffic.
 
