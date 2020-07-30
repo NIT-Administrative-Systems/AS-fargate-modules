@@ -31,3 +31,5 @@ override.tf.json
 # example: *tfplan*
 
 /iac/*/build/*
+
+.DS_Store
