@@ -137,6 +137,25 @@ The load balancer sends periodic requests to the registered tasks to check their
 | hc_path | The path for the healthcheck request. | No | string | /healthcheck |
 | hc_matcher | The response code required for a successful health check response. May be a single value, a list of values as a string, or a range of values as a string. | No | string | 200 |
 
+### Outputs
+Available outputs from the modules:
+| Name | Description |
+| ---- | ----------- |
+| parameters | Secret SSM parameters. Output is used by Jenkins to set the secret text. |
+| kms_arn | The arn of the encryption key used for the SSM secrets so you can use it to encrypt elsewhere | 
+| task_definition | The arn of the task definition created. Useful in AWS ECS cli commands e.g. to see if your task is running |  
+| cluster_name | The name of the ecs cluster created. Useful in AWS ECS cli commands  e.g. to run a one-off task or see what's running on your cluster | 
+| security_group | The id of the security group used. May be useful in AWS ECS cli commands, e.g. to run a one-off task | 
+| subnet_ids | The list of subnet ids - may be useful in AWS ECS cli commands e.g. to run a one-off task |
+| cw_log_group_name | The name of the cloudwatch log group created for your task. Useful for querying logs via AWS logs cli |
+| cw_log_stream_prefix | The name of the cloudwatch log prefix for your task logs. Useful for querying logs via AWS logs cli |
+| task_short_name | The task name (cleaned and shortened) used to name resources | 
+
+### Complete Example
+A complete end-to-end example implementing implementing the shared Fargate Service module with an ECR repository, building the image, etc. for a simple Node/Express application can be found in the [NUIT Administrative Systems Fargate Service Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-service-example)
+
+### Known issues 
+There is a Terraform or AWS bug causing the task definition template to only update the name property of the secrets and ignore the updated valueFrom in the updated map variable, so valueFrom property doesn't get the new ARN when the container secrets list changes until second deploy. Fixed by adding a depends_on to the task definition template, however the way Terraform handles a depends_on in a template causes it to destroy and recreate  a new task definition revision in the task family every time you run `terraform apply`.
 
 ## Contributing
 Find another input you would like parameterized? Need another output? Want to clarify something in the documentation? Pull requests welcome!
