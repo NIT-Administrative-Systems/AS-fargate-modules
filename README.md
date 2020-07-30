@@ -4,7 +4,7 @@
 
 This is a Terraform IaC module for creating a fargate task with a single container, which runs on a schedule via cloudwatch event rule, and secrets management through SSM. It implements the Admin Systems practices outlined on our cloud practice site. This solution may be ideal for a serverless architecture which is resource-intensive or long-running enough to exceed the lambda duration/memory limitations e.g. periodic longer-running batch jobs, etc. 
 
-When `terraform apply` updates the task definition, or the image has been updated, future tasks launched will use the new image/definition version but any tasks already running will not recieve the changes. 
+When you push a new container image or apply a change to the task definition, future tasks launched will use the new version but any tasks already running will not recieve the changes. 
 
 Fargate task charges are based on the vCPU and Memory resources while your containerized application is running. 
 
