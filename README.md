@@ -126,7 +126,7 @@ Auto Scaling Inputs
 | memory_scalein_cooldown | The minimum time (seconds) after a memory scalein before subsequent memory scalein events. e.g. reduce costs by allowing faster scale in  than the default AWS 300. | No | number | 180 |
 | memory_scaleout_cooldown | The minimum time (seconds) after a memory scaleout before subsequent memory scaleout events. Set at least as long as it takes for your memory load to normalize after scaling out so you don't overscale. | No | number | 180 | 
 
-Load Balancer Health Check Inputs
+Load Balancer Health Check Inputs:
 The load balancer sends periodic requests to the registered tasks to check their status. It will replace unhealthy tasks. 
 | Name | Description | Required | Type | Default |
 | ---- | ----------- | -------- | ---- | ------- |
@@ -139,4 +139,4 @@ The load balancer sends periodic requests to the registered tasks to check their
 
 
 ## Contributing
-Find another input you would like parameterized? Need another output? Pull requests welcome! Want to clarify something in the documentation? Pull requests welcome!
+Find another input you would like parameterized? Need another output? Want to clarify something in the documentation? Pull requests welcome!
