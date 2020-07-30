@@ -55,7 +55,7 @@ variable "assign_public_ip" {
 variable "aws_security_group" {
     default = null # mark as unset if there is none provided
 }
-variable "account_lb_security_group_id" {}
+variable "alb_security_group_id" {}
 variable "task_listening_port" {
     type = number
     default = 8080

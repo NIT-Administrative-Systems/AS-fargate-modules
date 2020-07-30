@@ -56,7 +56,7 @@ A complete end-to-end example implementing implementing the shared Fargate Task 
 There is a Terraform or AWS bug causing the task definition template to only update the name property of the secrets and ignore the updated valueFrom in the updated map variable, so valueFrom property doesn't get the new ARN when the container secrets list changes until second deploy. Fixed by adding a depends_on to the task definition template, however the way Terraform handles a depends_on in a template causes it to destroy and recreate  a new task definition revision in the task family every time you run `terraform apply`.
 
 ## Fargate Service
-A service lets you specify how many copies of the task definition to run. This module runs a service behind an Application Load Balancer to distribute incoming traffic to containers (each with 1 task) in your service. Amazon ECS maintains that number of tasks and coordinates task scheduling with the load balancer. The module uses ECS Service Auto Scaling with target tracking to adjust the number of tasks in your service. 
+A service lets you specify how many copies of the task definition to run. This module runs a service behind an Application Load Balancer to distribute incoming traffic to containers (each with 1 task) in your service. Amazon ECS maintains that number of tasks and coordinates task scheduling with the load balancer. The module uses ECS Service Auto Scaling with target tracking to adjust the number of tasks in your service based on CPU and memory utilization targets.
 
 If your service is not a customer-facing application, it is able to make use of the shared account ALB - see the AS Cloud Docs website. 
 
@@ -103,8 +103,8 @@ Task Networking Inputs
 | aws_security_group | A terraformed aws_security_group resource to use. | No | Terraform aws_security_group resource | If none is provided, a security group will be created which allows outbound traffic. | 
 | subnet_ids | One or more subnets for the fargate ENI to attach to. | Yes | list(string) | Required parameters do not have a default. | 
 | assign_public_ip | Whether to assign a public IP address to the ENI | No | boolean | false |
-| account_lb_security_group_id | 
-| task_listening_port |
+| alb_security_group_id | The security group id of the ALB. Used to allow inbound traffic from the ALB to your Fargate service | yes | string | Required parameters do not have a default. |
+| task_listening_port | The port exposed exposed by your container. Will be used by the ALB to communicate with your container. | no | number | 8080 | 
 
 Application Load Balancer Inputs
 | Name | Description | Required | Type | Default |
@@ -117,24 +117,25 @@ Application Load Balancer Inputs
 Auto Scaling Inputs
 | Name | Description | Required | Type | Default |
 | ---- | ----------- | -------- | ---- | ------- |
-| min_capacity | 
-| max_capacity | high enough that you can scale for traffic but low enough you don't overspend | 
-| cpu_target | 
-| cpu_scalein_cooldown | 
-| cpu_scaleout_cooldown |
-| memory_target | 
-| memory_scalein_cooldown |
-| memory_scaleout_cooldown | 
+| min_capacity | The minimum number of tasks to run. 
+| max_capacity | The maximum number of tasks to run. High enough that you can scale for traffic but low enough you don't overspend | 
+| cpu_target | Target cpu utilization. | No | number | 75 |
+| cpu_scalein_cooldown | The minimum time (seconds) after a cpu scalein before subsequent cpu scalein events. e.g. reduce costs by allowing faster scale-in than the default AWS 300. | No | number | 180 |
+| cpu_scaleout_cooldown | The minimum time (seconds) after a cpu scaleout before subsequent cpu scaleout events. Set at least as long as it takes for your cpu load to normalize after scaling out so you don't overscale. | No | number | 180 |
+| memory_target | Target memory utilization. | No | number | 75 |
+| memory_scalein_cooldown | The minimum time (seconds) after a memory scalein before subsequent memory scalein events. e.g. reduce costs by allowing faster scale in  than the default AWS 300. | No | number | 180 |
+| memory_scaleout_cooldown | The minimum time (seconds) after a memory scaleout before subsequent memory scaleout events. Set at least as long as it takes for your memory load to normalize after scaling out so you don't overscale. | No | number | 180 | 
 
 Load Balancer Health Check Inputs
+The load balancer sends periodic requests to the registered tasks to check their status. It will replace unhealthy tasks. 
 | Name | Description | Required | Type | Default |
 | ---- | ----------- | -------- | ---- | ------- |
-| hc_healthy_threshold |
-| hc_unhealthy_threshold | | 
-| hc_timeout | 
-| hc_interval | 
-| hc_path |
-| hc_matcher | 
+| hc_healthy_threshold | The number of successful health checks to be considered a healthy task | No | number | 4 |
+| hc_unhealthy_threshold | The number of failed health checks to be considered an unhealthy task | No | number | 2 | 
+| hc_timeout | The time (seconds) after which no response indicates an unhealthy task. | No | number | 15 |
+| hc_interval | The time (seconds) between health checks of a task. Min 5, Max 300. | No | number | 60 |
+| hc_path | The path for the healthcheck request. | No | string | /healthcheck |
+| hc_matcher | The response code required for a successful health check response. May be a single value, a list of values as a string, or a range of values as a string. | No | string | 200 |
 
 
 ## Contributing

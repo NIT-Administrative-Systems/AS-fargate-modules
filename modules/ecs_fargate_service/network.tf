@@ -11,7 +11,7 @@ resource "aws_security_group" "allow_outbound" {
     from_port       = var.task_listening_port
     to_port         = var.task_listening_port
     protocol        = "tcp"
-    security_groups = [var.account_lb_security_group_id]
+    security_groups = [var.alb_security_group_id]
   }
 
   # for testing - add public ip address, public subnets, and inbound access from my ip
