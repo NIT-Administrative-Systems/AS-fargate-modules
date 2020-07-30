@@ -59,7 +59,10 @@ A service lets you specify how many copies of the task definition to run. This m
 
 If your service is not a customer-facing application, it is able to make use of the shared account ALB - see the AS Cloud Docs website. 
 
-When `terraform apply` updates the task definition or you push a new ecr image, future tasks launched will use the new image and/or definition but any tasks already running will not recieve the changes. `terraform apply` will not necessarily trigger a redeployment of the ECS service if that resource has not changed; you should develop a mechanism for redeploying the service after image/task definitions are changed, e.g. using `aws ecs update-service --cluster <cluster name> --service <service name> --force-new-deployment` in your pipeline. 
+When `terraform apply` updates the task definition or you push a new ecr image, future tasks launched will use the new image and/or definition but any tasks already running will not recieve the changes. 
+- If your updated image has the same tag as the image used by the currently running task-definition (e.g. "latest"), use the AWS CLI command for redeploying the service after image/task definitions are changed, e.g. using `aws ecs update-service --cluster <cluster name> --service <service name> --force-new-deployment` in a pipeline stage.
+- If your updated image has a different tag, you will have to specify the updated value in the inputs to this module (variable ecr_image_tag), after which a `terraform apply` will create a new task definition (which will cause the service to be recreated). 
+
 
 Fargate service charges are based on the vCPU and Memory resources while your containerized application is running, and the number of tasks running. This is in addition to charges for other AWS services used, such as the ALB traffic.
 
@@ -113,7 +116,6 @@ Application Load Balancer Inputs
 | alb_listener_arn | The ARN of an existing alb listener. | Yes | string | Required parameters do not have a default |
 | deregistration_delay | After deregistering a task from the load balancer, the amount of time (seconds) for the load balancer to wait on draining active connections before changing task to unused. | No | Number | 300 | 
 | hostnames | The hostnames for your application. Used by the ALB listener to route traffic. | Yes | list(string) | Required parameters do not have a default. | 
-
 
 Auto Scaling Inputs
 | Name | Description | Required | Type | Default |

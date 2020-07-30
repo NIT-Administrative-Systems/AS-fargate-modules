@@ -7,7 +7,7 @@ output "task_definition" {
 }
 
 output "service_name" {
-  value = aws_ecs_service.ecs_task_serv.name
+  value = aws_ecs_service.main.name
 }
 
 output "subnet_ids" {

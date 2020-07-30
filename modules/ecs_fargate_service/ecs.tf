@@ -56,15 +56,16 @@ resource "aws_ecs_task_definition" "main" {
   tags = local.tags
 }
 
-resource "aws_ecs_service" "main" {
-  # depends_on      = ["aws_iam_role_policy.foo"]
-
+resource "aws_ecs_service" "main" {u
   name            = "${local.task_short_name}-${var.env}"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
-  # iam_role        = aws_iam_role.foo.arn
   launch_type     = "FARGATE"
-  desired_count   = 2 # number of instances to start with 
+  desired_count   = 2 # number of instances to start with on new deployment 
+
+  # used by service scheduler when you update-service --force-new-deployment after pushing a new application image:
+  deployment_minimum_healthy_percent = var.ecs_deploy_min_healthy_perc˜
+  deployment_maximum_percent         = var.ecs_deploy_max_perc˜
 
   network_configuration {
     subnets         = var.subnet_ids
