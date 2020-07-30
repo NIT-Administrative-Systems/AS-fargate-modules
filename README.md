@@ -143,11 +143,12 @@ Available outputs from the modules:
 | Name | Description |
 | ---- | ----------- |
 | parameters | Secret SSM parameters. Output is used by Jenkins to set the secret text. |
+| ecs_service_name | The name of the ECS service. Useful in AWS ECS cli commands, e.g. to redeploy the service after pushing a new image | 
+| cluster_name | The name of the ecs cluster created. Useful in AWS ECS cli commands, e.g. to redeploy the service after pushing a new image | 
 | kms_arn | The arn of the encryption key used for the SSM secrets so you can use it to encrypt elsewhere | 
-| task_definition | The arn of the task definition created. Useful in AWS ECS cli commands e.g. to see if your task is running |  
-| cluster_name | The name of the ecs cluster created. Useful in AWS ECS cli commands  e.g. to run a one-off task or see what's running on your cluster | 
-| security_group | The id of the security group used. May be useful in AWS ECS cli commands, e.g. to run a one-off task | 
-| subnet_ids | The list of subnet ids - may be useful in AWS ECS cli commands e.g. to run a one-off task |
+| task_definition | The arn of the task definition created. |  
+| security_group | The id of the security group used. | 
+| subnet_ids | The list of subnet ids. |
 | cw_log_group_name | The name of the cloudwatch log group created for your task. Useful for querying logs via AWS logs cli |
 | cw_log_stream_prefix | The name of the cloudwatch log prefix for your task logs. Useful for querying logs via AWS logs cli |
 | task_short_name | The task name (cleaned and shortened) used to name resources | 
