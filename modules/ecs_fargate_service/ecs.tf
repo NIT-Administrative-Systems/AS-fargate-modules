@@ -87,8 +87,8 @@ resource "aws_ecs_service" "main" {
     container_port   = var.task_listening_port
   }
 
-  # Optional: Allow external changes without Terraform plan difference
-  # lifecycle {
-  #   ignore_changes = [desired_count]
-  # }
+  # Optional: Allow external changes without Terraform plan difference - needed so autoscaling not disrupted by terraform apply
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
 }
