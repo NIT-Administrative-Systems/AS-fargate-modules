@@ -71,18 +71,10 @@ Available inputs to pass into the modules:
 | env | Short name for your app's environment | Yes | string | Required parameters do not have a default. | 
 | task_name | Short name to identify your task | Yes | string | Required parameters do not have a default. | 
 | region | AWS region to build in | Yes | string | Required parameters do not have a default. |
-| ecr_repository_url | ECR repository url to pull image from to start the container | Yes | string | Required parameters do not have a default. | 
-| ecr_repository_arn | ECR repositiory arn (to grant task necessary IAM permissions) | Yes | string | Required parameters do not have a default. | 
-| ecr_image_tag | ECR image tag to pull for starting the container | No | string | "latest" |
-| vpc_id | The VPC id to run in. Fargate task definitions require that the network mode is set to awsvpc. The awsvpc network mode provides each task with its own elastic network interface. | Yes | string | Required parameters do not have a default. | 
-| aws_security_group | A terraformed aws_security_group resource to use. | No | Terraform aws_security_group resource | If none is provided, a security group will be created which allows outbound traffic. | 
-| subnet_ids | One or more subnets for the fargate ENI to attach to. | Yes | list(string) | Required parameters do not have a default. | 
-| assign_public_ip | Whether to assign a public IP address to the ENI | No | boolean | false |
-| cw_status | Whether to enable or disable the cloudwatch rule | Yes | boolean | Required parameters do not have a default. | 
-| cw_schedule | The cloudwatch schedule expression to use | Yes | string | Required parameters do not have a default. | 
-| container_env_variables | A list of environment variable maps for your container. Do not include secrets. | No | list(object({name  = string, value = string})) | [] |
-| container_secrets | A list of secrets to create in SSM and inject into the container at runtime. If updated, already running containers will not get new values/params. Names should match Jenkins credential IDs and will be available as env variables when the container runs. Do not use dashes/hyphens. | No | list(string) | [] |
-| container_port_mappings | The list of port mappings for the container | No | list(object({containerPort = number, hostPort = number, protocol = string})) | [] |
+
+Task Definition Inputs
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
 | task_cpu | The number of CPU units reserved for the task (The container level will use the same value) | No | number | 256 |
 | task_memory | The memory specified for the task level (The container level will use the same value) | No | number | 512 |
 | aws_task_iam_policy_document | An IAM policy document granting permissions for other AWS services your task container is allowed to make calls to when it's running. | No | Terraform aws_iam_policy_document resource | null |
@@ -90,12 +82,37 @@ Available inputs to pass into the modules:
 | task_family | A name for multiple versions of the task definition | No | string | task_name-env |
 | tags | A set of tag name and value pairs for tagging all applicable resources created - useful for cost visibility | No | map(string) | By default resources will be tagged with these standard AS tags: Application: task_name, Environment: env. Override these values by including them in your tags input map. | 
 
+Container Definition Inputs
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| container_env_variables | A list of environment variable maps for your container. Do not include secrets. | No | list(object({name  = string, value = string})) | [] |
+| container_secrets | A list of secrets to create in SSM and inject into the container at runtime. If updated, already running containers will not get new values/params. Names should match Jenkins credential IDs and will be available as env variables when the container runs. Do not use dashes/hyphens. | No | list(string) | [] |
+| container_port_mappings | The list of port mappings for the container | No | list(object({containerPort = number, hostPort = number, protocol = string})) | [] |
+
+ECR Inputs
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| ecr_repository_url | ECR repository url to pull image from to start the container | Yes | string | Required parameters do not have a default. | 
+| ecr_repository_arn | ECR repositiory arn (to grant task necessary IAM permissions) | Yes | string | Required parameters do not have a default. | 
+| ecr_image_tag | ECR image tag to pull for starting the container | No | string | "latest" |
+
+Task Networking Inputs
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| vpc_id | The VPC id to run in. Fargate task definitions require that the network mode is set to awsvpc. The awsvpc network mode provides each task with its own elastic network interface. | Yes | string | Required parameters do not have a default. | 
+| aws_security_group | A terraformed aws_security_group resource to use. | No | Terraform aws_security_group resource | If none is provided, a security group will be created which allows outbound traffic. | 
+| subnet_ids | One or more subnets for the fargate ENI to attach to. | Yes | list(string) | Required parameters do not have a default. | 
+| assign_public_ip | Whether to assign a public IP address to the ENI | No | boolean | false |
+| account_lb_security_group_id | 
+| task_listening_port |
+
 Application Load Balancer Inputs
 | Name | Description | Required | Type | Default |
 | ---- | ----------- | -------- | ---- | ------- |
 | alb_listener_arn | The ARN of an existing alb listener. | Yes | string | Required parameters do not have a default |
 | deregistration_delay | After deregistering a task from the load balancer, the amount of time (seconds) for the load balancer to wait on draining active connections before changing task to unused. | No | Number | 300 | 
-| hostnames | 
+| hostnames | The hostnames for your application. Used by the ALB listener to route traffic. | Yes | list(string) | Required parameters do not have a default. | 
+
 
 Auto Scaling Inputs
 | Name | Description | Required | Type | Default |
@@ -108,6 +125,16 @@ Auto Scaling Inputs
 | memory_target | 
 | memory_scalein_cooldown |
 | memory_scaleout_cooldown | 
+
+Load Balancer Health Check Inputs
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| hc_healthy_threshold |
+| hc_unhealthy_threshold | | 
+| hc_timeout | 
+| hc_interval | 
+| hc_path |
+| hc_matcher | 
 
 
 ## Contributing
