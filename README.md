@@ -143,7 +143,7 @@ Available outputs from the modules:
 | Name | Description |
 | ---- | ----------- |
 | parameters | Secret SSM parameters. Output is used by Jenkins to set the secret text. |
-| ecs_service_name | The name of the ECS service. Useful in AWS ECS cli commands, e.g. to redeploy the service after pushing a new image | 
+| service_name | The name of the ECS service. Useful in AWS ECS cli commands, e.g. to redeploy the service after pushing a new image | 
 | cluster_name | The name of the ecs cluster created. Useful in AWS ECS cli commands, e.g. to redeploy the service after pushing a new image | 
 | kms_arn | The arn of the encryption key used for the SSM secrets so you can use it to encrypt elsewhere | 
 | task_definition | The arn of the task definition created. |  
