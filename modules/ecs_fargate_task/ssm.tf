@@ -20,8 +20,3 @@ resource "aws_ssm_parameter" "secure_param" {
     ignore_changes = [value]
   }
 }
-
-# create secrets map for ecs task definition
-locals {
-    container_ssm_map = zipmap(var.container_secrets, slice(aws_ssm_parameter.secure_param.*.arn, 0, length(var.container_secrets)))
-}

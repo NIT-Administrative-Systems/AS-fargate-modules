@@ -65,6 +65,10 @@ data "aws_iam_policy_document" "ecs_execution_container_policy" {
 }
 
 data "aws_iam_policy_document" "ecs_inject_container_secrets_policy" {
+  depends_on = [
+      aws_ssm_parameter.secure_param # otherwise doesn't get updated params until second apply
+  ]
+
   count = length(var.container_secrets) > 0 ? 1 : 0 # can only add this policy if there are ssm params 
   
   statement {

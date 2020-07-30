@@ -54,9 +54,6 @@ Available outputs from the modules:
 ### Complete Example
 A complete end-to-end example implementing implementing the shared Fargate Task module with an ECR repository, building the image, etc. for a simple Node.js application can be found in the [NUIT Administrative Systems Fargate Task Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-task-example)
 
-### Known issues 
-There is a Terraform or AWS bug causing the task definition template to only update the name property of the secrets and ignore the updated valueFrom in the updated map variable, so valueFrom property doesn't get the new ARN when the container secrets list changes until second deploy. Fixed by adding a depends_on to the task definition template, however the way Terraform handles a depends_on in a template causes it to destroy and recreate  a new task definition revision in the task family every time you run `terraform apply`.
-
 ## Fargate Service
 A service lets you specify how many copies of the task definition to run. This module runs a service behind an Application Load Balancer to distribute incoming traffic to containers (each with 1 task) in your service. Amazon ECS maintains that number of tasks and coordinates task scheduling with the load balancer. The module uses ECS Service Auto Scaling with target tracking to adjust the number of tasks in your service based on CPU and memory utilization targets.
 
@@ -157,9 +154,6 @@ Available outputs from the modules:
 
 ### Complete Example
 A complete end-to-end example implementing implementing the shared Fargate Service module with an ECR repository, building the image, etc. for a simple Node/Express application can be found in the [NUIT Administrative Systems Fargate Service Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-service-example)
-
-### Known issues 
-There is a Terraform or AWS bug causing the task definition template to only update the name property of the secrets and ignore the updated valueFrom in the updated map variable, so valueFrom property doesn't get the new ARN when the container secrets list changes until second deploy. Fixed by adding a depends_on to the task definition template, however the way Terraform handles a depends_on in a template causes it to destroy and recreate  a new task definition revision in the task family every time you run `terraform apply`.
 
 ## Contributing
 Find another input you would like parameterized? Need another output? Want to clarify something in the documentation? Pull requests welcome!
