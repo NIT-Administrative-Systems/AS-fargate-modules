@@ -23,7 +23,7 @@ module "fargate_task" {
   assign_public_ip = true
 
   cw_status   = true # rule enabled (true) or disabled (false)
-  cw_schedule = "cron(30 21 ? * MON-FRI *)" # cloudwatch schedule to use when DST is true 
+  cw_schedule = "cron(30 21 ? * MON-FRI *)"
 
   # Do not include secret values here (passwords, API tokens, etc)
   # List of maps e.g. [{name = "env", value = "dev"}, {name = "task_name", value = "my_task"}]
