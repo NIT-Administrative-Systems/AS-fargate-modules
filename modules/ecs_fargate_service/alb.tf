@@ -39,8 +39,14 @@ resource "aws_lb_listener_rule" "lb_group_rule" {
     target_group_arn = aws_lb_target_group.lb_target_group.arn
   }
   
+  # tf 0.12.29 broke this on 7/31
+  # condition {
+  #   field  = "host-header"
+  #   values = var.hostnames
+  #  }
   condition {
-    field  = "host-header"
-    values = var.hostnames
-   }
+    host_header {
+      values = var.hostnames
+    }
+  }
 }
