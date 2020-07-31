@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "main" {
   tags = local.tags
 }
 
-resource "aws_ecs_service" "main" {u
+resource "aws_ecs_service" "main" {
   name            = "${local.task_short_name}-${var.env}"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
