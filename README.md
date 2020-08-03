@@ -1,5 +1,11 @@
 # Admin Systems: Fargate Infrastructure-as-Code Modules
 
+<span style="color:orange">When referencing these modules in your IaC module's source, DO NOT reference the master branch as there may be breaking changes from future releases. Only reference a specific release tag, e.g.: ?ref=tags/v1.0.2</span>
+```
+module "fargate_example" {
+  source = "github.com/NIT-Administrative-Systems/AS-fargate-modules//modules/ecs_fargate_service?ref=tags/v1.0.0"
+```
+
 ## Fargate Task 
 
 This is a Terraform IaC module for creating a fargate task with a single container, which runs on a schedule via cloudwatch event rule, and secrets management through SSM. It implements the Admin Systems practices outlined on our cloud practice site. This solution may be ideal for a serverless architecture which is resource-intensive or long-running enough to exceed the lambda duration/memory limitations e.g. periodic longer-running batch jobs, etc. 
