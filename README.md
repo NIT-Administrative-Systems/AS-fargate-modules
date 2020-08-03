@@ -1,6 +1,6 @@
 # Admin Systems: Fargate Infrastructure-as-Code Modules
 
-When referencing these modules in your IaC module's source, DO NOT reference the master branch as there may be breaking changes from future releases. Only reference a specific release tag, e.g.: ?ref=tags/v1.0.2
+When referencing these modules in your IaC module's source, DO NOT reference the master branch as there may be breaking changes from future releases. Only reference a specific release tag, e.g. ?ref=tags/v1.0.2
 ```
 module "fargate_example" {
   source = "github.com/NIT-Administrative-Systems/AS-fargate-modules//modules/ecs_fargate_service?ref=tags/v1.0.0"
