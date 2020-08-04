@@ -148,6 +148,18 @@ The load balancer sends periodic requests to the registered tasks to check their
 | hc_path | The path for the healthcheck request. | No | string | /healthcheck |
 | hc_matcher | The response code required for a successful health check response. May be a single value, a list of values as a string, or a range of values as a string. | No | string | 200 |
 
+ECS Service Health Check Inputs:
+The ecs service scheduler may also do health checks. 
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| hc_grace_period | The time (seconds) to wait after the container status is in the RUNNING state before health checks are considered. This prevents prematurely shutting down new tasks as UNHEALTHY when they are known to take awhile to start up after the container is running. | No | number | 30 |
+
+ECS Service Deployment Inputs: 
+| Name | Description | Required | Type | Default |
+| ---- | ----------- | -------- | ---- | ------- |
+| ecs_deploy_min_healthy_perc | The lower limit on how many healthy tasks must remain RUNNING during ECS rolling update deployment. If set to less than 100, enables you ECS to free up cluster capacity before starting new tasks so you can deploy without using additional cluster capacity | No | number | 100 |
+| ecs_deploy_max_perc | The upper limit on how many RUNNING/PENDING/DRAINING tasks there may be during deployment. This controls the deployment batch size; deployment batches may be used to avoid downtime in case a deployment is faulty and fails. | No | number | 200 |
+
 ### Outputs
 Available outputs from the modules:
 | Name | Description |

@@ -63,6 +63,11 @@ resource "aws_ecs_service" "main" {
   launch_type     = "FARGATE"
   desired_count   = 2 # number of instances to start with on new deployment 
 
+  # container health and rolling deployments
+  deployment_minimum_healthy_percent = var.ecs_deploy_min_healthy_perc
+  deployment_maximum_percent = var.ecs_deploy_max_perc
+  health_check_grace_period_seconds = var.hc_grace_period
+
   network_configuration {
     subnets         = var.subnet_ids
     security_groups = [var.aws_security_group != null ? var.aws_security_group.id : aws_security_group.allow_outbound[0].id]
