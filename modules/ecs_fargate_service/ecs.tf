@@ -61,7 +61,7 @@ resource "aws_ecs_service" "main" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.main.arn
   launch_type     = "FARGATE"
-  desired_count   = 2 # number of instances to start with on new deployment 
+  desired_count   = var.desired_count # number of instances to start with on new deployment 
 
   # container health and rolling deployments
   deployment_minimum_healthy_percent = var.ecs_deploy_min_healthy_perc
