@@ -15,18 +15,17 @@ locals {
 resource "aws_ecs_task_definition" "main" {
   depends_on = [
       aws_iam_role.ecs_execution_role,
-      aws_iam_role.ecs_task_role
+      aws_iam_role.ecs_task_role,
   ]
 
   family = var.task_family != null ? var.task_family : "${local.task_short_name}-${var.env}"
 
   # define the containers that are launched as part of a task
-  # must be inline and not template_file or the dependencies are messed up because it uses another provider
-  # in that case, valueFrom doesn't get updated in the secrets map until the second apply because order of execution is incorrect
+  # don't put this json as a separate template file data object bc uses a different provider and the order gets odd and doesn't get the updated valueFrom in the secrets map in time to update it in the task definition. 
   container_definitions    = <<EOF
   [
     {
-      "name": "${local.task_short_name}",
+      "name": "${local.task_short_name}-${var.env}",
       "image": "${var.ecr_repository_url}:${var.ecr_image_tag}",
       "requiresCompatibilities": [
         "FARGATE"
@@ -55,4 +54,41 @@ resource "aws_ecs_task_definition" "main" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   tags = local.tags
+}
+
+resource "aws_ecs_service" "main" {
+  name            = "${local.task_short_name}-${var.env}"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.main.arn
+  launch_type     = "FARGATE"
+  desired_count   = var.desired_count # number of instances to start with on new deployment 
+
+  # container health and rolling deployments
+  deployment_minimum_healthy_percent = var.ecs_deploy_min_healthy_perc
+  deployment_maximum_percent = var.ecs_deploy_max_perc
+  health_check_grace_period_seconds = var.hc_grace_period
+
+  network_configuration {
+    subnets         = var.subnet_ids
+    security_groups = [var.aws_security_group != null ? var.aws_security_group.id : aws_security_group.allow_outbound[0].id]
+    assign_public_ip = var.assign_public_ip
+  }
+
+  depends_on = [
+    aws_iam_role.ecs_task_role,
+    aws_iam_role.ecs_execution_role,
+    aws_cloudwatch_log_group.ecs,
+  ]
+
+  # register the service with the load balancer target group created 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
+    container_name   = "${local.task_short_name}-${var.env}" # as it appears in container definition 
+    container_port   = var.task_listening_port
+  }
+
+  # Optional: Allow external changes without Terraform plan difference - needed so autoscaling not disrupted by terraform apply
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
 }
