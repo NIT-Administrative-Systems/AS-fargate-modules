@@ -176,7 +176,7 @@ Available outputs from the modules:
 | task_short_name | The task name (cleaned and shortened) used to name resources | 
 
 ### Complete Example
-A complete end-to-end example implementing implementing the shared Fargate Service module with an ECR repository, building the image, etc. for a simple Node/Express application can be found in the [NUIT Administrative Systems Fargate Service Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-service-example)
+A complete end-to-end example implementing the shared Fargate Service module with an ECR repository, building the image, etc. for a simple Node/Express application can be found in the [NUIT Administrative Systems Fargate Service Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-service-example)
 
 ## Contributing
 Find another input you would like parameterized? Need another output? Want to clarify something in the documentation? Pull requests welcome!
