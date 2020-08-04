@@ -60,7 +60,7 @@ Available outputs from the modules:
 | task_short_name | The task name (cleaned and shortened) used to name resources | 
 
 ### Complete Example
-A complete end-to-end example implementing implementing the shared Fargate Task module with an ECR repository, building the image, etc. for a simple Node.js application can be found in the [NUIT Administrative Systems Fargate Task Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-task-example)
+A complete end-to-end example implementing the shared Fargate Task module with an ECR repository, building the image, etc. for a simple Node.js application can be found in the [NUIT Administrative Systems Fargate Task Example repository](https://github.com/NIT-Administrative-Systems/as-fargate-task-example)
 
 ## Fargate Service
 A service lets you specify how many copies of the task definition to run. This module runs a service behind an Application Load Balancer to distribute incoming traffic to containers (each with 1 task) in your service. Amazon ECS maintains that number of tasks and coordinates task scheduling with the load balancer. The module uses ECS Service Auto Scaling with target tracking to adjust the number of tasks in your service based on CPU and memory utilization targets.
