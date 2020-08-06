@@ -2,6 +2,11 @@ variable "env" {}
 variable "task_name" {}
 variable "region" {}
 
+variable "tags" {
+    type = map(string)
+    default = {}
+}
+
 # Fargate Task
 variable "task_cpu" {
     type = number
@@ -67,11 +72,6 @@ variable "ecr_repository_arn" {}
 variable "ecr_image_tag" {
     type = string
     default = "latest"
-}
-
-variable "tags" {
-    type = map(string)
-    default = {}
 }
 
 # ALB
