@@ -62,6 +62,9 @@ resource "aws_ecs_service" "main" {
   task_definition = aws_ecs_task_definition.main.arn
   launch_type     = "FARGATE"
   desired_count   = var.task_count # number of instances to start with on new deployment 
+  
+  tags            = local.tags
+  propagate_tags  = "SERVICE"
 
   # container health and rolling deployments
   deployment_minimum_healthy_percent = var.ecs_deploy_min_healthy_perc
