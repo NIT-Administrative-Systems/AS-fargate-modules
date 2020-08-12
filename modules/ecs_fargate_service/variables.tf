@@ -144,10 +144,19 @@ variable "hc_grace_period" {
 
 # ECS Deploy
 variable "ecs_deploy_min_healthy_perc" {
- type = number
- default = 100
+    type = number
+    default = 100
 }
 variable "ecs_deploy_max_perc" {
- type = number
- default = 200
+    type = number
+    default = 200
+}
+
+# Application Scheduled Autoscaling
+variable "service_shutdown_schedules" {
+    type = map(object({
+        shutdown  = string
+        startup = string
+    }))
+    default = {}
 }
