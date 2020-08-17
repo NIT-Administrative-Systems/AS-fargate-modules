@@ -136,6 +136,7 @@ Auto Scaling Inputs
 | memory_target | Target memory utilization. | No | number | 75 |
 | memory_scalein_cooldown | The minimum time (seconds) after a memory scalein before subsequent memory scalein events. e.g. reduce costs by allowing faster scale in  than the default AWS 300. | No | number | 180 |
 | memory_scaleout_cooldown | The minimum time (seconds) after a memory scaleout before subsequent memory scaleout events. Set at least as long as it takes for your memory load to normalize after scaling out so you don't overscale. | No | number | 180 | 
+| service_shutdown_schedules | Specifies times for stopping the service and restarting it again, e.g. to save costs by stopping dev/test on nights/weekends. The shutdown/startup string values must be AWS Scheduling Expressions and can be recurring crons or one-time events. Use short descriptive names as the keys for the startup/shutdown pairs. | No | map(map(object({shutdown  = string, startup = string}))) | {} |
 
 Load Balancer Health Check Inputs:
 The load balancer sends periodic requests to the registered tasks to check their status. It will replace unhealthy tasks. 
