@@ -33,7 +33,7 @@ Available inputs to pass into the modules:
 | subnet_ids | One or more subnets for the fargate ENI to attach to. | Yes | list(string) | Required parameters do not have a default. | 
 | assign_public_ip | Whether to assign a public IP address to the ENI | No | boolean | false |
 | cw_status | Whether to enable or disable the cloudwatch rule | Yes | boolean | Required parameters do not have a default. | 
-| cw_schedule | The cloudwatch schedule expression to use | Yes | string | Required parameters do not have a default. | 
+| cw_schedule | The cloudwatch schedule expression to use | No | string | null | 
 | container_env_variables | A list of environment variable maps for your container. Do not include secrets. | No | list(object({name  = string, value = string})) | [] |
 | container_secrets | A list of secrets to create in SSM and inject into the container at runtime. If updated, already running containers will not get new values/params. Names should match Jenkins credential IDs and will be available as env variables when the container runs. Do not use dashes/hyphens. | No | list(string) | [] |
 | container_port_mappings | The list of port mappings for the container | No | list(object({containerPort = number, hostPort = number, protocol = string})) | [] |
