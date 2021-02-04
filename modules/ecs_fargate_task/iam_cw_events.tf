@@ -1,6 +1,6 @@
 # for cloudwatch events to execute the ecs task
 data "aws_iam_policy_document" "cw_execution_assume_role_policy" {
-  count = var.cw_schedule != null ? 0 : 1 # only create if a cloudwatch schedule is provided as an input
+  count = var.cw_schedule != null ? 1 : 0 # only create if a cloudwatch schedule is provided as an input
 
   statement {
     actions = ["sts:AssumeRole"]
@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "cw_execution_assume_role_policy" {
 # so event role doesn't have the permissions to run the latest task definition
 
 data "aws_iam_policy_document" "cw_role_policy" {
-  count = var.cw_schedule != null ? 0 : 1 # only create if a cloudwatch schedule is provided as an input
+  count = var.cw_schedule != null ? 1 : 0 # only create if a cloudwatch schedule is provided as an input
 
   depends_on = [aws_ecs_task_definition.main]
 
@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "cw_role_policy" {
 }
 
 resource "aws_iam_role" "cw_event_execution_role" {
-  count = var.cw_schedule != null ? 0 : 1 # only create if a cloudwatch schedule is provided as an input
+  count = var.cw_schedule != null ? 1 : 0 # only create if a cloudwatch schedule is provided as an input
 
   name                  = "${local.task_short_name}-cw-event-role-${var.env}"
   assume_role_policy    = data.aws_iam_policy_document.cw_execution_assume_role_policy.json
@@ -69,7 +69,7 @@ resource "aws_iam_role" "cw_event_execution_role" {
 }
 
 resource "aws_iam_role_policy" "cw_role_policy" {
-  count = var.cw_schedule != null ? 0 : 1 # only create if a cloudwatch schedule is provided as an input
+  count = var.cw_schedule != null ? 1 : 0 # only create if a cloudwatch schedule is provided as an input
 
   name   = "${local.task_short_name}-cw-event-role-policy-${var.env}"
   role   = aws_iam_role.cw_event_execution_role.id
