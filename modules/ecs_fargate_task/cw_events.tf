@@ -11,8 +11,8 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
     count = var.cw_schedule != null ? 1 : 0 # only create if a cloudwatch schedule is provided as an input
 
     arn       = aws_ecs_cluster.main.arn
-    rule      = aws_cloudwatch_event_rule.task_schedule.name
-    role_arn  = aws_iam_role.cw_event_execution_role.arn
+    rule      = aws_cloudwatch_event_rule.task_schedule[0].name
+    role_arn  = aws_iam_role.cw_event_execution_role[0].arn
 
     ecs_target {
         launch_type         = "FARGATE"
