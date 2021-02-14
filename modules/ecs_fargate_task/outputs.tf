@@ -27,7 +27,7 @@ output "cw_log_stream_prefix" {
 }
 
 output "parameters" {
-    value = zipmap(join(var.container_secrets, var.secrets_suffix), slice(aws_ssm_parameter.secure_param.*.name, 0, length(var.container_secrets)))
+    value = zipmap(formatlist("%s${var.secrets_suffix}", var.container_secrets), slice(aws_ssm_parameter.secure_param.*.name, 0, length(var.container_secrets)))
 }
 
 output "kms_arn" {
