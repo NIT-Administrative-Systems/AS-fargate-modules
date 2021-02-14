@@ -34,6 +34,9 @@ variable "container_secrets" {
     type = list(string)
     default = []
 }
+variable "secrets_suffix" {
+    default = "" # optional - mark as unset if none provided 
+}
 variable "container_port_mappings" {
     type = list(object({
         containerPort = number
