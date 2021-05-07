@@ -34,6 +34,9 @@ variable "container_secrets" {
     type = list(string)
     default = []
 }
+variable "secrets_suffix" {
+    default = "" # optional - mark as unset if none provided 
+}
 variable "container_port_mappings" {
     type = list(object({
         containerPort = number
@@ -58,9 +61,11 @@ variable "aws_security_group" {
 
 # CW Rules
 variable "cw_status" {
-    type = bool
+    type = bool # I think people could still set this as false if they don't want to use cw 
 }
-variable "cw_schedule" {}
+variable "cw_schedule" {
+    default = null # optional - mark as unset if none provided 
+}
 
 # ECR
 variable "ecr_repository_url"{}
